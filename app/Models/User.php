@@ -23,11 +23,17 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'program',
     ];
 
     public function borrows()
     {
         return $this->hasMany(Borrow::class);
+    }
+
+    public function fines()
+    {
+        return $this->hasMany(Fine::class);
     }
 
     /**

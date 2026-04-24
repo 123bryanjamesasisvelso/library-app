@@ -12,6 +12,7 @@ class Book extends Model
         'isbn',
         'total_copies',
         'available_copies',
+        'department',
     ];
 
     public function borrows()

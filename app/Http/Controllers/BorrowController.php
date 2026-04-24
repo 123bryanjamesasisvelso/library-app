@@ -5,11 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Borrow;
+use App\Services\FineService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class BorrowController extends Controller
 {
+    protected $fineService;
+
+    public function __construct(FineService $fineService)
+    {
+        $this->fineService = $fineService;
+    }
+
     public function borrow(Request $request, Book $book)
     {
         $user = $request->user();
@@ -57,6 +65,9 @@ class BorrowController extends Controller
             ]);
 
             $borrow->book()->increment('available_copies');
+
+            // Calculate fine if book is overdue
+            $this->fineService->calculateFineForBorrow($borrow);
         });
 
         return back()->with('status', 'Book returned.');

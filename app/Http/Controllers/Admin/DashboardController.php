@@ -19,6 +19,14 @@ class DashboardController extends Controller
         $totalBooks = Book::count();
         $totalBorrows = Borrow::count();
 
+        // Calculate additional stats
+        $totalBookCopies = Book::sum('total_copies');
+        $availableBooks = Book::sum('available_copies');
+        $borrowedBooks = max(0, $totalBookCopies - $availableBooks);
+        $activeBorrows = Borrow::whereNull('returned_at')->count();
+        $overdueBooks = Borrow::whereNull('returned_at')->where('due_at', '<', $now)->count();
+        $studentCount = User::where('role', 'student')->count();
+
         $usersChange = $this->pctChange(
             User::whereBetween('created_at', $prev30)->count(),
             User::whereBetween('created_at', $last30)->count()
@@ -45,11 +53,16 @@ class DashboardController extends Controller
             'adminName' => auth()->user()->name ?? 'Admin',
             'stats' => [
                 'totalUsers' => $totalUsers,
-                'totalBooks' => $totalBooks,
+                'totalBooks' => $totalBookCopies,
                 'totalBorrows' => $totalBorrows,
                 'usersChange' => $usersChange,
                 'booksChange' => $booksChange,
                 'borrowsChange' => $borrowsChange,
+                'activeBorrows' => $activeBorrows,
+                'availableBooks' => $availableBooks,
+                'borrowedBooks' => $borrowedBooks,
+                'overdueBooks' => $overdueBooks,
+                'studentCount' => $studentCount,
             ],
             'recentUsers' => $recentUsers,
             'recentBooks' => $recentBooks,

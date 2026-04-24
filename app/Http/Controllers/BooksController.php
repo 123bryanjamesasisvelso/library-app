@@ -12,6 +12,7 @@ class BooksController extends Controller
     public function index(Request $request)
     {
         $q = trim((string) $request->query('q', ''));
+        $department = trim((string) $request->query('department', ''));
         $user = $request->user();
         $role = (string) ($user->role ?? 'student');
 
@@ -22,6 +23,9 @@ class BooksController extends Controller
                         ->orWhere('author', 'like', "%{$q}%")
                         ->orWhere('isbn', 'like', "%{$q}%");
                 });
+            })
+            ->when($department !== '', function ($query) use ($department) {
+                $query->where('department', $department);
             })
             ->latest()
             ->get();
@@ -36,6 +40,7 @@ class BooksController extends Controller
 
         return view('books.index', [
             'q' => $q,
+            'department' => $department,
             'books' => $books,
             'activeBorrows' => $activeBorrows,
             'role' => $role,
@@ -60,6 +65,7 @@ class BooksController extends Controller
             'author' => ['required', 'string', 'max:255'],
             'isbn' => ['required', 'string', 'max:32', 'unique:books,isbn'],
             'total_copies' => ['required', 'integer', 'min:1'],
+            'department' => ['required', 'string', 'max:100'],
         ]);
 
         $total = (int) $validated['total_copies'];
@@ -70,6 +76,7 @@ class BooksController extends Controller
             'isbn' => $validated['isbn'],
             'total_copies' => $total,
             'available_copies' => $total,
+            'department' => $validated['department'],
         ]);
 
         return redirect()->route('librarian.books')->with('status', 'Book added.');

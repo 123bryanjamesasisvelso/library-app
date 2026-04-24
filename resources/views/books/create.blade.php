@@ -26,6 +26,23 @@
             </div>
 
             <div>
+                <label class="block text-sm text-gray-300 mb-2">Department / Category</label>
+                <select name="department" required
+                    class="w-full px-4 py-3 bg-maroon-950/60 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    <option value="">Select a department</option>
+                    <option value="Computer Science" {{ old('department') === 'Computer Science' ? 'selected' : '' }}>Computer Science</option>
+                    <option value="Information Technology" {{ old('department') === 'Information Technology' ? 'selected' : '' }}>Information Technology</option>
+                    <option value="Business Administration" {{ old('department') === 'Business Administration' ? 'selected' : '' }}>Business Administration</option>
+                    <option value="Engineering" {{ old('department') === 'Engineering' ? 'selected' : '' }}>Engineering</option>
+                    <option value="Liberal Arts" {{ old('department') === 'Liberal Arts' ? 'selected' : '' }}>Liberal Arts</option>
+                    <option value="Natural Sciences" {{ old('department') === 'Natural Sciences' ? 'selected' : '' }}>Natural Sciences</option>
+                    <option value="Medicine" {{ old('department') === 'Medicine' ? 'selected' : '' }}>Medicine</option>
+                    <option value="Law" {{ old('department') === 'Law' ? 'selected' : '' }}>Law</option>
+                    <option value="General" {{ old('department') === 'General' ? 'selected' : '' }}>General</option>
+                </select>
+            </div>
+
+            <div>
                 <label class="block text-sm text-gray-300 mb-2">ISBN</label>
                 <input name="isbn" value="{{ old('isbn') }}" required
                     class="w-full px-4 py-3 bg-maroon-950/60 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500">

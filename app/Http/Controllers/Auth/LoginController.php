@@ -31,7 +31,7 @@ class LoginController extends Controller
         return redirect()->intended(match ($role) {
             'admin' => '/admin/dashboard',
             'librarian' => '/librarian/dashboard',
-            default => '/student/books',
+            default => '/student/dashboard',
         });
     }
 

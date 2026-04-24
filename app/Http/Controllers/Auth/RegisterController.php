@@ -32,18 +32,25 @@ class RegisterController extends Controller
             abort(404);
         }
 
-        $user = User::create([
+        $userData = [
             'name' => $request->string('name')->toString(),
             'email' => $request->string('email')->toString(),
             'password' => Hash::make($request->string('password')->toString()),
             'role' => $role,
-        ]);
+        ];
+
+        // Include program for students
+        if ($role === 'student' && $request->filled('program')) {
+            $userData['program'] = $request->string('program')->toString();
+        }
+
+        $user = User::create($userData);
 
         Auth::login($user);
 
         return redirect(match ($role) {
             'admin' => '/admin/dashboard',
-            default => '/student/books',
+            default => '/student/dashboard',
         });
     }
 }

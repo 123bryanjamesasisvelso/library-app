@@ -30,17 +30,24 @@ class DatabaseSeeder extends Seeder
                 ['name' => 'Librarian User', 'password' => Hash::make('password'), 'role' => 'librarian']
             );
 
-            $students = User::factory()->count(6)->create();
+            $students = User::factory()->count(6)->create([
+                'program' => collect(['BSCS', 'BSHM', 'BSBA', 'EDUC'])
+                    ->random()
+            ]);
 
             $books = collect([
-                ['The Great Gatsby', 'F. Scott Fitzgerald', '978-0743273565', 12],
-                ['1984', 'George Orwell', '978-0451524935', 8],
-                ['To Kill a Mockingbird', 'Harper Lee', '978-0061120084', 15],
-                ['Pride and Prejudice', 'Jane Austen', '978-0141439518', 10],
-                ['The Hobbit', 'J.R.R. Tolkien', '978-0547928227', 6],
-                ['Dune', 'Frank Herbert', '978-0441172719', 9],
+                ['The Great Gatsby', 'F. Scott Fitzgerald', '978-0743273565', 12, 'Liberal Arts'],
+                ['1984', 'George Orwell', '978-0451524935', 8, 'Liberal Arts'],
+                ['To Kill a Mockingbird', 'Harper Lee', '978-0061120084', 15, 'Liberal Arts'],
+                ['Pride and Prejudice', 'Jane Austen', '978-0141439518', 10, 'Liberal Arts'],
+                ['The Hobbit', 'J.R.R. Tolkien', '978-0547928227', 6, 'Liberal Arts'],
+                ['Dune', 'Frank Herbert', '978-0441172719', 9, 'Natural Sciences'],
+                ['Introduction to Algorithms', 'Thomas Cormen', '978-0262033848', 5, 'Computer Science'],
+                ['Design Patterns', 'Gang of Four', '978-0201633610', 4, 'Computer Science'],
+                ['Principles of Economics', 'N. Gregory Mankiw', '978-0357456553', 7, 'Business Administration'],
+                ['Organic Chemistry', 'Jonathan Clayden', '978-0199270293', 3, 'Natural Sciences'],
             ])->map(function ($b) {
-                [$title, $author, $isbn, $total] = $b;
+                [$title, $author, $isbn, $total, $department] = $b;
 
                 return Book::updateOrCreate(
                     ['isbn' => $isbn],
@@ -49,6 +56,7 @@ class DatabaseSeeder extends Seeder
                         'author' => $author,
                         'total_copies' => $total,
                         'available_copies' => $total,
+                        'department' => $department,
                     ]
                 );
             });

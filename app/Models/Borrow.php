@@ -33,4 +33,9 @@ class Borrow extends Model
     {
         return $this->belongsTo(Book::class);
     }
+
+    public function fines()
+    {
+        return $this->hasMany(Fine::class);
+    }
 }

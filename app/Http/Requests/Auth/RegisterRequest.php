@@ -22,10 +22,19 @@ class RegisterRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $role = $this->route('role');
+
+        $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
+
+        // Program is required for students
+        if ($role === 'student') {
+            $rules['program'] = ['required', 'string', 'max:100'];
+        }
+
+        return $rules;
     }
 }

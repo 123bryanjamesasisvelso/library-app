@@ -8,7 +8,9 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\BooksController;
+use App\Http\Controllers\FineController;
 use App\Http\Controllers\Librarian\DashboardController as LibrarianDashboardController;
+use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
@@ -39,6 +41,11 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/books/{book}/edit', [BookManagementController::class, 'edit'])->name('admin.books.edit');
     Route::put('/books/{book}', [BookManagementController::class, 'update'])->name('admin.books.update');
     Route::delete('/books/{book}', [BookManagementController::class, 'destroy'])->name('admin.books.destroy');
+    
+    Route::get('/fines', [FineController::class, 'index'])->name('admin.fines.index');
+    Route::post('/fines/{fine}/mark-as-paid', [FineController::class, 'markAsPaid'])->name('admin.fines.mark-paid');
+    Route::post('/fines/{fine}/waive', [FineController::class, 'waive'])->name('admin.fines.waive');
+    
     Route::get('/profile', [ProfileController::class, 'admin'])->name('admin.profile');
 });
 
@@ -51,7 +58,9 @@ Route::prefix('librarian')->middleware(['auth', 'role:librarian'])->group(functi
 });
 
 Route::prefix('student')->middleware(['auth', 'role:student'])->group(function () {
+    Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
     Route::get('/books', [BooksController::class, 'index'])->name('student.books');
+    Route::get('/fines', [FineController::class, 'myFines'])->name('student.fines');
 });
 
 Route::middleware(['auth', 'role:librarian,student'])->group(function () {

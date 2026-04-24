@@ -54,6 +54,20 @@
                         class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-maroon-500 focus:border-transparent transition-all">
                 </div>
 
+                @if ($role === 'student')
+                    <div>
+                        <label for="program" class="block text-sm font-semibold text-gray-700 mb-2">Program / Course <span class="text-red-600">*</span></label>
+                        <select id="program" name="program" required
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-maroon-500 focus:border-transparent transition-all">
+                            <option value="">Select a program</option>
+                            <option value="BSCS" {{ old('program') === 'BSCS' ? 'selected' : '' }}>BSCS</option>
+                            <option value="BSHM" {{ old('program') === 'BSHM' ? 'selected' : '' }}>BSHM</option>
+                            <option value="BSBA" {{ old('program') === 'BSBA' ? 'selected' : '' }}>BSBA</option>
+                            <option value="EDUC" {{ old('program') === 'EDUC' ? 'selected' : '' }}>EDUC</option>
+                        </select>
+                    </div>
+                @endif
+
                 <div>
                     <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
                     <input type="password" id="password" name="password" required
