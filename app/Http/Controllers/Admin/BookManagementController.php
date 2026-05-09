@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreBookRequest;
 use App\Http\Requests\Admin\UpdateBookRequest;
 use App\Models\Book;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -15,6 +16,8 @@ class BookManagementController extends Controller
     {
         $q = trim((string) $request->query('q', ''));
 
+        $departmentId = $request->query('department');
+
         $books = Book::query()
             ->when($q !== '', function ($query) use ($q) {
                 $query->where(function ($sub) use ($q) {
@@ -23,6 +26,10 @@ class BookManagementController extends Controller
                         ->orWhere('isbn', 'like', "%{$q}%");
                 });
             })
+            ->when($departmentId, function ($query) use ($departmentId) {
+                $query->where('department_id', $departmentId);
+            })
+            ->with(['department:id,name,code'])
             ->withCount([
                 'borrows as borrowed_count' => fn ($q) => $q->whereNull('returned_at'),
             ])
@@ -33,12 +40,16 @@ class BookManagementController extends Controller
         return view('admin.books', [
             'books' => $books,
             'q' => $q,
+            'departments' => Department::orderBy('name')->get(),
+            'selectedDepartment' => $departmentId,
         ]);
     }
 
     public function create()
     {
-        return view('admin.books-create');
+        return view('admin.books-create', [
+            'departments' => Department::orderBy('name')->get(),
+        ]);
     }
 
     public function store(StoreBookRequest $request)
@@ -51,6 +62,7 @@ class BookManagementController extends Controller
             'isbn' => $request->string('isbn')->toString(),
             'total_copies' => $total,
             'available_copies' => $total,
+            'department_id' => $request->input('department_id'),
         ]);
 
         return redirect()->route('admin.books.index')->with('status', 'Book added.');
@@ -60,6 +72,7 @@ class BookManagementController extends Controller
     {
         return view('admin.books-edit', [
             'book' => $book,
+            'departments' => Department::orderBy('name')->get(),
         ]);
     }
 
@@ -80,6 +93,7 @@ class BookManagementController extends Controller
             'isbn' => $request->string('isbn')->toString(),
             'total_copies' => $total,
             'available_copies' => $available,
+            'department_id' => $request->input('department_id'),
         ]);
 
         return redirect()->route('admin.books.index')->with('status', 'Book updated.');

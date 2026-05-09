@@ -6,10 +6,18 @@
     <title>Digital Library Management</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        .bg-landing {
+            background-image: url('{{ asset('images/libraryngani.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
 </head>
-<body class="min-h-screen relative">
+<body class="min-h-screen relative bg-landing">
     <!-- Background image -->
-    <div class="fixed inset-0 -z-10" style="background-image: url('{{ asset('images/libraryngani.jpg') }}'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div class="fixed inset-0 -z-10 bg-landing">
         <div class="absolute inset-0 bg-black/40"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/60"></div>
     </div>
@@ -68,8 +76,8 @@
                         <a href="{{ url('/login') }}" class="px-8 py-4 bg-purple-600 text-white rounded-2xl hover:bg-purple-700 transition-all font-semibold text-lg shadow-xl shadow-purple-900/30 hover:shadow-purple-900/40 hover:-translate-y-0.5">
                             Get Started
                         </a>
-                        <a href="#" class="px-8 py-4 bg-white/10 text-white rounded-2xl border border-white/20 hover:border-white/40 transition-all font-semibold text-lg hover:-translate-y-0.5 backdrop-blur">
-                            Learn More
+                        <a href="{{ route('register.student') }}" class="px-8 py-4 bg-white/10 text-white rounded-2xl border border-white/20 hover:border-white/40 transition-all font-semibold text-lg hover:-translate-y-0.5 backdrop-blur">
+                            Register as Student
                         </a>
                     </div>
                 </div>

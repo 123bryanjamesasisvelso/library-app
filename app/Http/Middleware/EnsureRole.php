@@ -21,8 +21,8 @@ class EnsureRole
         if (! $user) {
             abort(401);
         }
-
-        if (! empty($roles) && ! in_array((string) $user->role, $roles, true)) {
+        $userRole = (string) ($user->role ?? 'student');
+        if (! empty($roles) && ! in_array($userRole, $roles, true)) {
             abort(403);
         }
 

@@ -27,6 +27,7 @@ class UpdateBookRequest extends FormRequest
             'author' => ['required', 'string', 'max:255'],
             'isbn' => ['required', 'string', 'max:32'],
             'total_copies' => ['required', 'integer', 'min:1'],
+            'department_id' => ['nullable', 'exists:departments,id'],
         ];
     }
 }

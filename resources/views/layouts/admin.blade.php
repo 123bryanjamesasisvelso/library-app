@@ -7,11 +7,27 @@
 </div>
 <aside class="w-64 bg-library-sidebar min-h-screen flex flex-col fixed left-0 top-0 z-40">
 <div class="p-6 border-b border-white/10"><div class="flex items-center gap-3"><div class="w-10 h-10 bg-maroon-600 rounded-xl flex items-center justify-center text-white font-bold">DL</div><div><h2 class="text-white font-bold text-lg">DigiLib</h2><p class="text-gray-400 text-xs">Admin Panel</p></div></div></div>
-<nav class="flex-1 p-4 space-y-1">
-<a href="{{url('/admin/dashboard')}}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-library-hover hover:text-white rounded-xl{{request()->is('admin/dashboard')?' bg-library-hover text-white font-medium':''}}">Dashboard</a>
-<a href="{{url('/admin/users')}}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-library-hover hover:text-white rounded-xl{{request()->is('admin/users')?' bg-library-hover text-white font-medium':''}}">Users</a>
-<a href="{{url('/admin/books')}}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-library-hover hover:text-white rounded-xl{{request()->is('admin/books')?' bg-library-hover text-white font-medium':''}}">Books</a>
-<a href="{{url('/admin/profile')}}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-library-hover hover:text-white rounded-xl{{request()->is('admin/profile')?' bg-library-hover text-white font-medium':''}}">Profile</a>
+<nav class="flex-1 p-4 space-y-2">
+<a href="{{url('/admin/dashboard')}}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-library-hover hover:text-white rounded-xl transition-colors{{request()->is('admin/dashboard')?' bg-maroon-600/40 text-white font-medium border-l-4 border-maroon-500':''}}">
+  <span class="text-lg">📊</span>
+  <span>Dashboard</span>
+</a>
+<a href="{{url('/admin/users')}}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-library-hover hover:text-white rounded-xl transition-colors{{request()->is('admin/users')?' bg-maroon-600/40 text-white font-medium border-l-4 border-maroon-500':''}}">
+  <span class="text-lg">👥</span>
+  <span>Users</span>
+</a>
+<a href="{{url('/admin/books')}}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-library-hover hover:text-white rounded-xl transition-colors{{request()->is('admin/books')?' bg-maroon-600/40 text-white font-medium border-l-4 border-maroon-500':''}}">
+  <span class="text-lg">📚</span>
+  <span>Books</span>
+</a>
+<a href="{{url('/admin/inventory')}}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-library-hover hover:text-white rounded-xl transition-colors{{request()->is('admin/inventory')?' bg-maroon-600/40 text-white font-medium border-l-4 border-maroon-500':''}}">
+  <span class="text-lg">📦</span>
+  <span>Inventory</span>
+</a>
+<a href="{{url('/admin/profile')}}" class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:bg-library-hover hover:text-white rounded-xl transition-colors{{request()->is('admin/profile')?' bg-maroon-600/40 text-white font-medium border-l-4 border-maroon-500':''}}">
+  <span class="text-lg">👤</span>
+  <span>Profile</span>
+</a>
 </nav>
 <div class="p-4 border-t border-white/10 space-y-3">
     <div class="flex items-center gap-3">

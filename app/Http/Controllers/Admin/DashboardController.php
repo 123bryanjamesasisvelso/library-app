@@ -18,6 +18,9 @@ class DashboardController extends Controller
         $totalUsers = User::count();
         $totalBooks = Book::count();
         $totalBorrows = Borrow::count();
+        $totalFines = Borrow::where('fine_amount', '>', 0)->sum('fine_amount');
+        $unpaidFines = Borrow::where('fine_amount', '>', 0)->where('fine_paid', false)->sum('fine_amount');
+        $overdueCount = Borrow::whereNull('returned_at')->where('due_at', '<', $now)->count();
 
         $usersChange = $this->pctChange(
             User::whereBetween('created_at', $prev30)->count(),
@@ -47,6 +50,9 @@ class DashboardController extends Controller
                 'totalUsers' => $totalUsers,
                 'totalBooks' => $totalBooks,
                 'totalBorrows' => $totalBorrows,
+                'totalFines' => $totalFines,
+                'unpaidFines' => $unpaidFines,
+                'overdueCount' => $overdueCount,
                 'usersChange' => $usersChange,
                 'booksChange' => $booksChange,
                 'borrowsChange' => $borrowsChange,

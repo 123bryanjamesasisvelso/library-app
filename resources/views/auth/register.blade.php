@@ -54,6 +54,19 @@
                         class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-maroon-500 focus:border-transparent transition-all">
                 </div>
 
+                @if ($role === 'student')
+                <div>
+                    <label for="program" class="block text-sm font-semibold text-gray-700 mb-2">Program / Course</label>
+                    <select id="program" name="program" required
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-maroon-500 focus:border-transparent transition-all">
+                        <option value="" disabled {{ old('program') ? '' : 'selected' }}>Select your program</option>
+                        @foreach ($programs as $key => $label)
+                            <option value="{{ $key }}" {{ old('program') === $key ? 'selected' : '' }}>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
+
                 <div>
                     <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
                     <input type="password" id="password" name="password" required

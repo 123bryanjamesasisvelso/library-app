@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Book;
 use App\Models\Borrow;
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -30,17 +31,35 @@ class DatabaseSeeder extends Seeder
                 ['name' => 'Librarian User', 'password' => Hash::make('password'), 'role' => 'librarian']
             );
 
+            $programs = ['bshm', 'bsba', 'educ', 'bscs'];
             $students = User::factory()->count(6)->create();
+            $students->each(function ($student, $index) use ($programs) {
+                $student->update(['program' => $programs[$index % count($programs)]]);
+            });
+
+            $departments = collect([
+                ['BSHM', 'Hotel Management'],
+                ['BSBA', 'Business Administration'],
+                ['EDUC', 'Education'],
+                ['BSCS', 'Computer Science'],
+            ])->mapWithKeys(function ($d) {
+                [$code, $name] = $d;
+                $dept = Department::updateOrCreate(
+                    ['code' => $code],
+                    ['name' => $name]
+                );
+                return [$code => $dept];
+            });
 
             $books = collect([
-                ['The Great Gatsby', 'F. Scott Fitzgerald', '978-0743273565', 12],
-                ['1984', 'George Orwell', '978-0451524935', 8],
-                ['To Kill a Mockingbird', 'Harper Lee', '978-0061120084', 15],
-                ['Pride and Prejudice', 'Jane Austen', '978-0141439518', 10],
-                ['The Hobbit', 'J.R.R. Tolkien', '978-0547928227', 6],
-                ['Dune', 'Frank Herbert', '978-0441172719', 9],
-            ])->map(function ($b) {
-                [$title, $author, $isbn, $total] = $b;
+                ['The Great Gatsby', 'F. Scott Fitzgerald', '978-0743273565', 12, 'BSHM'],
+                ['1984', 'George Orwell', '978-0451524935', 8, 'BSBA'],
+                ['To Kill a Mockingbird', 'Harper Lee', '978-0061120084', 15, 'EDUC'],
+                ['Pride and Prejudice', 'Jane Austen', '978-0141439518', 10, 'BSCS'],
+                ['The Hobbit', 'J.R.R. Tolkien', '978-0547928227', 6, 'BSHM'],
+                ['Dune', 'Frank Herbert', '978-0441172719', 9, 'BSBA'],
+            ])->map(function ($b) use ($departments) {
+                [$title, $author, $isbn, $total, $deptCode] = $b;
 
                 return Book::updateOrCreate(
                     ['isbn' => $isbn],
@@ -49,6 +68,7 @@ class DatabaseSeeder extends Seeder
                         'author' => $author,
                         'total_copies' => $total,
                         'available_copies' => $total,
+                        'department_id' => $departments[$deptCode]->id,
                     ]
                 );
             });
@@ -80,7 +100,7 @@ class DatabaseSeeder extends Seeder
                 'status' => 'returned',
             ]);
 
-            // Overdue borrow
+            // Overdue borrow (6 days overdue = $30 fine)
             Borrow::create([
                 'user_id' => $sampleUsers[2]->id,
                 'book_id' => $sampleBooks[2]->id,
@@ -88,6 +108,7 @@ class DatabaseSeeder extends Seeder
                 'due_at' => now()->subDays(6),
                 'returned_at' => null,
                 'status' => 'overdue',
+                'fine_amount' => 30.00,
             ]);
             $sampleBooks[2]->decrement('available_copies');
 

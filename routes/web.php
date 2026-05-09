@@ -6,9 +6,11 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\BookManagementController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\UserManagementController;
+use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\BooksController;
 use App\Http\Controllers\Librarian\DashboardController as LibrarianDashboardController;
+use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
@@ -29,6 +31,7 @@ Route::post('/logout', [LoginController::class, 'destroy'])->middleware('auth')-
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/dashboard/overview', [AdminDashboardController::class, 'overview'])->name('admin.dashboard.overview');
+    Route::get('/inventory', [InventoryController::class, 'index'])->name('admin.inventory');
     Route::get('/users', [UserManagementController::class, 'index'])->name('admin.users.index');
     Route::get('/users/{user}', [UserManagementController::class, 'show'])->name('admin.users.show');
     Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('admin.users.destroy');
@@ -51,10 +54,15 @@ Route::prefix('librarian')->middleware(['auth', 'role:librarian'])->group(functi
 });
 
 Route::prefix('student')->middleware(['auth', 'role:student'])->group(function () {
+    Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
     Route::get('/books', [BooksController::class, 'index'])->name('student.books');
 });
 
 Route::middleware(['auth', 'role:librarian,student'])->group(function () {
     Route::post('/books/{book}/borrow', [BorrowController::class, 'borrow'])->name('borrows.borrow');
     Route::post('/borrows/{borrow}/return', [BorrowController::class, 'return'])->name('borrows.return');
+});
+
+Route::middleware(['auth', 'role:admin,librarian'])->group(function () {
+    Route::post('/borrows/{borrow}/pay-fine', [BorrowController::class, 'payFine'])->name('borrows.pay-fine');
 });

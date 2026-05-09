@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('book_id')->constrained()->cascadeOnDelete();
 
             $table->timestamp('borrowed_at');
-            $table->timestamp('due_at');
+            $table->timestamp('due_at')->nullable();
             $table->timestamp('returned_at')->nullable();
             $table->string('status', 20)->default('active')->index(); // active|returned|overdue
             $table->timestamps();

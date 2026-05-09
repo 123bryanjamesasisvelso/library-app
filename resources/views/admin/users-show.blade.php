@@ -14,10 +14,15 @@
                 <p class="text-gray-500 text-xs mt-1">Joined {{ $user->created_at?->format('M d, Y') }}</p>
             </div>
         </div>
-        <div class="mt-5">
+        <div class="mt-5 flex items-center gap-2">
             <span class="px-3 py-1 rounded-lg text-xs font-medium {{ $user->role === 'admin' ? 'bg-maroon-500/20 text-maroon-300' : ($user->role === 'librarian' ? 'bg-amber-500/20 text-amber-300' : 'bg-green-500/20 text-green-300') }}">
                 {{ ucfirst($user->role) }}
             </span>
+            @if ($user->program)
+                <span class="px-3 py-1 rounded-lg text-xs font-medium bg-blue-500/20 text-blue-300">
+                    {{ strtoupper($user->program) }}
+                </span>
+            @endif
         </div>
         <div class="mt-6 text-sm text-gray-300">
             <p><span class="text-gray-500">Total borrows:</span> {{ $user->borrows->count() }}</p>

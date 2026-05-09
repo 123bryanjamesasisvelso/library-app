@@ -12,10 +12,16 @@ class Book extends Model
         'isbn',
         'total_copies',
         'available_copies',
+        'department_id',
     ];
 
     public function borrows()
     {
         return $this->hasMany(Borrow::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 }

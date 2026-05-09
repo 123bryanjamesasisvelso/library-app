@@ -51,14 +51,39 @@ class BorrowController extends Controller
                 return;
             }
 
+            $fine = $borrow->calculateFine();
+
             $borrow->update([
                 'returned_at' => now(),
                 'status' => 'returned',
+                'fine_amount' => $fine,
             ]);
 
             $borrow->book()->increment('available_copies');
         });
 
         return back()->with('status', 'Book returned.');
+    }
+
+    public function payFine(Request $request, Borrow $borrow)
+    {
+        $user = $request->user();
+        $role = (string) ($user->role ?? 'student');
+
+        // Only admins/librarians can mark fines as paid, or a student can pay their own fine
+        if (! in_array($role, ['admin', 'librarian'], true) && $borrow->user_id !== $user->id) {
+            abort(403);
+        }
+
+        if ($borrow->fine_paid || ! $borrow->fine_amount || $borrow->fine_amount <= 0) {
+            return back()->with('error', 'This fine has already been paid or does not exist.');
+        }
+
+        $borrow->update([
+            'fine_paid' => true,
+            'fine_paid_at' => now(),
+        ]);
+
+        return back()->with('status', 'Fine paid successfully! Thank you.');
     }
 }

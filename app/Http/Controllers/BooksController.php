@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Borrow;
+use App\Models\Department;
 use Illuminate\Http\Request;
 
 class BooksController extends Controller
@@ -12,6 +13,7 @@ class BooksController extends Controller
     public function index(Request $request)
     {
         $q = trim((string) $request->query('q', ''));
+        $departmentId = $request->query('department');
         $user = $request->user();
         $role = (string) ($user->role ?? 'student');
 
@@ -23,6 +25,10 @@ class BooksController extends Controller
                         ->orWhere('isbn', 'like', "%{$q}%");
                 });
             })
+            ->when($departmentId, function ($query) use ($departmentId) {
+                $query->where('department_id', $departmentId);
+            })
+            ->with(['department:id,name,code'])
             ->latest()
             ->get();
 
@@ -41,6 +47,8 @@ class BooksController extends Controller
             'role' => $role,
             'layout' => $role === 'student' ? 'layouts.student' : 'layouts.librarian',
             'searchAction' => route($routePrefix.'.books'),
+            'departments' => Department::orderBy('name')->get(),
+            'selectedDepartment' => $departmentId,
         ]);
     }
 
@@ -60,6 +68,7 @@ class BooksController extends Controller
             'author' => ['required', 'string', 'max:255'],
             'isbn' => ['required', 'string', 'max:32', 'unique:books,isbn'],
             'total_copies' => ['required', 'integer', 'min:1'],
+            'department_id' => ['nullable', 'exists:departments,id'],
         ]);
 
         $total = (int) $validated['total_copies'];
@@ -70,6 +79,7 @@ class BooksController extends Controller
             'isbn' => $validated['isbn'],
             'total_copies' => $total,
             'available_copies' => $total,
+            'department_id' => $validated['department_id'] ?? null,
         ]);
 
         return redirect()->route('librarian.books')->with('status', 'Book added.');

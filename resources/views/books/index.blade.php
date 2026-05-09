@@ -12,10 +12,21 @@
     </div>
 @endif
 
-<div class="flex items-center gap-4 mb-6">
-<form method="GET" action="{{ $searchAction ?? url()->current() }}" class="flex-1">
+<div class="flex flex-col md:flex-row items-start md:items-center gap-4 mb-6">
+<form method="GET" action="{{ $searchAction ?? url()->current() }}" class="flex-1 flex items-center gap-3">
     <input type="text" name="q" value="{{ $q ?? request('q') }}" placeholder="Search books..."
         class="w-full max-w-md pl-4 py-3 bg-maroon-900/50 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500">
+    @if (!empty($departments))
+        <select name="department" onchange="this.form.submit()"
+            class="px-4 py-3 bg-maroon-900/50 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-pink-500">
+            <option value="">All Departments</option>
+            @foreach ($departments as $dept)
+                <option value="{{ $dept->id }}" {{ ($selectedDepartment ?? '') == $dept->id ? 'selected' : '' }}>
+                    {{ $dept->name }}
+                </option>
+            @endforeach
+        </select>
+    @endif
 </form>
 @if (($role ?? '') === 'librarian')
     <a href="{{ route('librarian.books.create') }}" class="px-5 py-3 bg-pink-600 text-white rounded-xl font-medium hover:bg-pink-700 transition-colors">+ Add Book</a>
@@ -31,6 +42,9 @@
     <h3 class="text-white font-bold text-lg">{{ $book->title }}</h3>
     <p class="text-gray-400 text-sm mt-1">{{ $book->author }}</p>
     <p class="text-gray-500 text-xs font-mono mt-2">{{ $book->isbn }}</p>
+    @if ($book->department)
+        <span class="inline-block mt-2 px-2 py-0.5 bg-purple-500/20 text-purple-300 rounded text-xs">{{ $book->department->name }}</span>
+    @endif
     <div class="flex items-center justify-between mt-3">
         <span class="inline-block px-3 py-1 {{ $available ? 'bg-green-500/20 text-green-300' : 'bg-amber-500/20 text-amber-300' }} rounded-lg text-xs font-medium">
             {{ $available ? 'Available' : 'Unavailable' }}

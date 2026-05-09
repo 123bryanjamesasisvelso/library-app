@@ -37,6 +37,21 @@
                     class="w-full px-4 py-3 bg-library-dark border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-maroon-500">
             </div>
 
+            @if (!empty($departments))
+            <div>
+                <label class="block text-sm text-gray-300 mb-2">Department</label>
+                <select name="department_id"
+                    class="w-full px-4 py-3 bg-library-dark border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-maroon-500">
+                    <option value="">Select Department</option>
+                    @foreach ($departments as $dept)
+                        <option value="{{ $dept->id }}" {{ old('department_id') == $dept->id ? 'selected' : '' }}>
+                            {{ $dept->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            @endif
+
             <div class="flex items-center gap-3 pt-2">
                 <button class="px-5 py-3 bg-maroon-600 text-white rounded-xl font-medium hover:bg-maroon-700 transition-colors">Save</button>
                 <a href="{{ route('admin.books.index') }}" class="px-5 py-3 bg-white/5 text-gray-200 rounded-xl hover:bg-white/10 transition-colors">Cancel</a>

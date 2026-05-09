@@ -23,6 +23,12 @@ class RegisterController extends Controller
         return view('auth.register', [
             'role' => 'student',
             'roleLabel' => 'Student',
+            'programs' => [
+                'bshm' => 'BSHM - BS Hotel Management',
+                'bsba' => 'BSBA - BS Business Administration',
+                'educ' => 'EDUC - Education',
+                'bscs' => 'BSCS - BS Computer Science',
+            ],
         ]);
     }
 
@@ -37,6 +43,7 @@ class RegisterController extends Controller
             'email' => $request->string('email')->toString(),
             'password' => Hash::make($request->string('password')->toString()),
             'role' => $role,
+            'program' => $role === 'student' ? $request->string('program')->toString() : null,
         ]);
 
         Auth::login($user);
